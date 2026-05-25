@@ -1,0 +1,150 @@
+/* ─── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+@import "tailwindcss";
+
+/* ─── CSS Variables — Amazon-inspired palette ──────────────────────────────── */
+:root {
+  --c-bg: #ffffff;
+  --c-bg-page: #eaeded;
+  --c-surface: #ffffff;
+  --c-surface-2: #f7f8fa;
+  --c-text: #0f1111;
+  --c-muted: #565959;
+  --c-link: #007185;
+  --c-link-hover: #c45500;
+  --c-border: #d5d9d9;
+  --c-border-light: #ddd;
+  --c-primary: #131921;
+  --c-primary-2: #232f3e;
+  --c-accent: #f59e0b;
+  --c-accent-2: #d97706;
+  --c-accent-soft: #fef4d4;
+  --c-price: #b12704;
+  --c-price-deal: #cc0c39;
+  --c-whatsapp: #25D366;
+  --c-whatsapp-dark: #128C7E;
+  --c-danger: #ef4444;
+  --c-success: #007600;
+}
+
+.dark {
+  --c-bg: #131921;
+  --c-bg-page: #0e131c;
+  --c-surface: #1a232f;
+  --c-surface-2: #232f3e;
+  --c-text: #f1f5f9;
+  --c-muted: #94a3b8;
+  --c-link: #7cb9c7;
+  --c-link-hover: #f59e0b;
+  --c-border: #2a3850;
+  --c-border-light: #1f2a3d;
+  --c-primary: #0b0f17;
+  --c-primary-2: #131921;
+  --c-accent: #f59e0b;
+  --c-accent-2: #d97706;
+  --c-accent-soft: rgba(245, 158, 11, 0.15);
+  --c-price: #ff7a73;
+  --c-price-deal: #ff5572;
+  --c-success: #4ade80;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+html,
+body {
+  background: var(--c-bg-page);
+  color: var(--c-text);
+  font-family: 'IBM Plex Sans Arabic', 'Cairo', 'Tajawal', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ─── Animations ────────────────────────────────────────────────────────────── */
+@keyframes revealUp {
+  from { transform: translateY(20px); }
+  to   { transform: translateY(0); }
+}
+.reveal { animation: revealUp 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+.reveal-delay-1 { animation-delay: 0.05s; }
+.reveal-delay-2 { animation-delay: 0.1s; }
+.reveal-delay-3 { animation-delay: 0.15s; }
+.reveal-delay-4 { animation-delay: 0.2s; }
+
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.55); }
+  70%  { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+@keyframes pageFadeIn {
+  from { transform: translateY(8px); }
+  to   { transform: translateY(0); }
+}
+
+.anim-float     { animation: float-soft 4s ease-in-out infinite; }
+.anim-pulse-ring { animation: pulse-ring 2s infinite; }
+.page-enter     { animation: pageFadeIn 0.35s ease forwards; }
+
+/* ─── Hero ──────────────────────────────────────────────────────────────────── */
+.hero-spotlight {
+  background:
+    radial-gradient(60% 80% at 70% 50%, rgba(245, 181, 61, 0.18) 0%, rgba(245, 181, 61, 0) 60%),
+    radial-gradient(50% 60% at 30% 30%, rgba(56, 118, 255, 0.18) 0%, rgba(56, 118, 255, 0) 60%),
+    linear-gradient(135deg, #060d1f 0%, #0a1628 50%, #0b1730 100%);
+}
+.hero-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+
+/* ─── Card hover sheen ──────────────────────────────────────────────────────── */
+.card-sheen { position: relative; overflow: hidden; }
+.card-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.12) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  pointer-events: none;
+}
+.card-sheen:hover::after { transform: translateX(100%); }
+
+/* ─── WhatsApp gradient ─────────────────────────────────────────────────────── */
+.wa-grad { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); }
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(120, 130, 150, 0.3); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(120, 130, 150, 0.55); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─── Number font ───────────────────────────────────────────────────────────── */
+.num-latin {
+  font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+  font-feature-settings: 'tnum';
+}
+
+/* ─── Tap highlight ─────────────────────────────────────────────────────────── */
+* { -webkit-tap-highlight-color: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .anim-float, .anim-pulse-ring { animation: none; }
+}
