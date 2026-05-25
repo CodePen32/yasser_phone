@@ -96,7 +96,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url }, { status: 201 });
 
   } catch (err) {
-    console.error('[upload]', err);
-    return NextResponse.json({ error: 'حدث خطأ أثناء رفع الملف' }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[upload] error:', message, err);
+    const isR2Error = message.includes('R2') || message.includes('r2.cloudflarestorage');
+    return NextResponse.json(
+      { error: isR2Error ? 'خطأ في رفع الصورة إلى التخزين السحابي — تأكد من إعدادات R2' : 'حدث خطأ أثناء رفع الملف' },
+      { status: 500 },
+    );
   }
 }

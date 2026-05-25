@@ -44,13 +44,13 @@ export function Header({ settings }: HeaderProps) {
         <div className="max-w-[1500px] mx-auto px-3 sm:px-4 h-14 flex items-center gap-3">
 
           {/* Logo */}
-          <Link href="/" className="shrink-0 flex items-center gap-2.5 group border border-transparent hover:border-white/30 rounded px-2 py-1 transition-colors">
+          <Link href="/" className="shrink-0 flex items-center gap-2 group border border-transparent hover:border-white/30 rounded px-1.5 py-1 transition-colors">
             <Image
               src="/assets/logo.png"
               alt={settings.store_name}
-              width={80}
-              height={80}
-              className="rounded-xl object-contain"
+              width={44}
+              height={44}
+              className="rounded-xl object-contain w-10 h-10 sm:w-[52px] sm:h-[52px]"
               priority
             />
             <div className="hidden sm:block leading-tight">
@@ -113,7 +113,7 @@ export function Header({ settings }: HeaderProps) {
                 className="hidden lg:flex flex-col items-center border border-transparent hover:border-white/30 rounded px-2 py-1 transition-colors"
               >
                 <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>هاتف</span>
-                <span className="text-white text-xs font-bold num-latin">{settings.phone}</span>
+                <span className="text-white text-xs font-bold num-latin ltr-value">{settings.phone}</span>
               </a>
             )}
 

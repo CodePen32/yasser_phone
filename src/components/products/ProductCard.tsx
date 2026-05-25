@@ -113,12 +113,12 @@ export function ProductCard({ product, whatsappNumber }: ProductCardProps) {
         {/* Price */}
         <div className="mt-auto pt-1">
           <div className="flex items-baseline gap-2 flex-wrap">
-            <span className="text-lg font-bold text-[var(--c-price)] num-latin">
+            <span className="text-lg font-bold text-[var(--c-price)] num-latin ltr-value">
               {product.price.toLocaleString()}
             </span>
             <span className="text-xs font-semibold text-[var(--c-muted)]">{product.currency}</span>
             {product.old_price && (
-              <span className="text-xs text-[var(--c-muted)] line-through num-latin">
+              <span className="text-xs text-[var(--c-muted)] line-through num-latin ltr-value">
                 {product.old_price.toLocaleString()}
               </span>
             )}

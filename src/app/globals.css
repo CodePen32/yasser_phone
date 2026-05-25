@@ -57,6 +57,7 @@ body {
   font-family: 'IBM Plex Sans Arabic', 'Cairo', 'Tajawal', sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 /* ─── Animations ────────────────────────────────────────────────────────────── */
@@ -140,6 +141,13 @@ body {
 .num-latin {
   font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
   font-feature-settings: 'tnum';
+}
+
+/* ─── LTR isolation for phone numbers, prices, IDs ─────────────────────────── */
+.ltr-value {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
 }
 
 /* ─── Tap highlight ─────────────────────────────────────────────────────────── */

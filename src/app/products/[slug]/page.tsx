@@ -134,17 +134,17 @@ export default async function ProductDetailPage({ params }: Props) {
 
             {/* Price */}
             <div className="flex items-baseline gap-3 flex-wrap py-3 border-y border-[var(--c-border)]">
-              <span className="text-3xl font-black text-[var(--c-price)] num-latin">
+              <span className="text-3xl font-black text-[var(--c-price)] num-latin ltr-value">
                 {product.price.toLocaleString()}
               </span>
               <span className="text-sm font-semibold text-[var(--c-muted)]">{product.currency}</span>
               {product.old_price && (
                 <>
-                  <span className="text-base text-[var(--c-muted)] line-through num-latin">
+                  <span className="text-base text-[var(--c-muted)] line-through num-latin ltr-value">
                     {product.old_price.toLocaleString()}
                   </span>
                   {product.discount_percent && (
-                    <span className="text-sm font-bold text-[var(--c-price-deal)] num-latin">
+                    <span className="text-sm font-bold text-[var(--c-price-deal)] num-latin ltr-value">
                       وفّر {(product.old_price - product.price).toLocaleString()} MRU
                     </span>
                   )}
