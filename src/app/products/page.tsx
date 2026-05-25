@@ -6,6 +6,7 @@ import { SortSelect } from '@/components/products/SortSelect';
 import {
   getStoreSettings,
   getActiveCategories,
+  getActiveBrands,
   getProducts,
 } from '@/lib/db';
 
@@ -17,32 +18,40 @@ interface Props {
     category?: string;
     brand?:    string;
     featured?: string;
+    offer?:    string;
     sort?:     'newest' | 'price_low' | 'price_high' | 'popular';
   }>;
 }
 
 export default async function ProductsPage({ searchParams }: Props) {
-  const { q, category, brand, featured, sort } = await searchParams;
+  const { q, category, brand, featured, offer, sort } = await searchParams;
 
-  const [settings, categories, products] = await Promise.all([
+  const isOffer = offer === 'true';
+
+  const [settings, categories, brands, products] = await Promise.all([
     getStoreSettings(),
     getActiveCategories(),
+    getActiveBrands(),
     getProducts({
-      search:      q,
+      search:       q,
       categorySlug: category,
-      brandSlug:   brand,
-      isFeatured:  featured === 'true',
-      sort:        sort ?? 'newest',
+      brandSlug:    brand,
+      isFeatured:   featured === 'true',
+      isOffer:      isOffer,
+      sort:         sort ?? 'newest',
     }),
   ]);
 
   const activeCategory = categories.find((c) => c.slug === category);
+  const activeBrand    = brands.find((b) => b.slug === brand);
 
   const title =
-    q          ? `نتائج البحث: "${q}"` :
-    activeCategory ? activeCategory.name_ar :
-    featured   ? 'المنتجات المميزة' :
-                 'جميع المنتجات';
+    q               ? `نتائج البحث: "${q}"` :
+    isOffer         ? 'عروض اليوم' :
+    activeCategory  ? activeCategory.name_ar :
+    activeBrand     ? activeBrand.name :
+    featured        ? 'المنتجات المميزة' :
+                      'جميع المنتجات';
 
   return (
     <>
@@ -59,7 +68,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           </div>
 
           {/* Sort */}
-          <SortSelect current={sort} q={q} category={category} brand={brand} featured={featured} />
+          <SortSelect current={sort} q={q} category={category} brand={brand} featured={featured} offer={offer} />
         </div>
 
         {/* Category chips */}

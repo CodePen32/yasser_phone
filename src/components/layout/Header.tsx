@@ -16,19 +16,19 @@ const WA_SVG = (
 );
 
 const NAV_ITEMS = [
-  { href: '/products',                        label: 'الكل' },
-  { href: '/offers',                          label: 'عروض اليوم' },
-  { href: '/products?category=phones',        label: 'الجوالات' },
-  { href: '/products?brand=apple',            label: 'آيفون' },
-  { href: '/products?brand=samsung',          label: 'سامسونج' },
-  { href: '/products?brand=xiaomi',           label: 'شاومي' },
-  { href: '/products?brand=tecno',            label: 'تكنو' },
-  { href: '/products?brand=infinix',          label: 'انفنكس' },
-  { href: '/products?brand=huawei',           label: 'هواوي' },
-  { href: '/products?category=audio',         label: 'سماعات' },
-  { href: '/products?category=chargers',      label: 'شواحن' },
-  { href: '/products?category=accessories',   label: 'إكسسوارات' },
-  { href: '/products?category=watches',       label: 'ساعات ذكية' },
+  { href: '/products',                              label: 'الكل' },
+  { href: '/products?offer=true',                   label: 'عروض اليوم' },
+  { href: '/products?category=smartphones',         label: 'الجوالات' },
+  { href: '/products?brand=apple',                  label: 'آيفون' },
+  { href: '/products?brand=samsung',                label: 'سامسونج' },
+  { href: '/products?brand=xiaomi',                 label: 'شاومي' },
+  { href: '/products?brand=tecno',                  label: 'تكنو' },
+  { href: '/products?brand=infinix',                label: 'إنفنكس' },
+  { href: '/products?brand=huawei',                 label: 'هواوي' },
+  { href: '/products?category=headphones',          label: 'سماعات' },
+  { href: '/products?category=chargers-cables',     label: 'شواحن' },
+  { href: '/products?category=accessories',         label: 'إكسسوارات' },
+  { href: '/products?category=smartwatches',        label: 'ساعات ذكية' },
 ];
 
 export function Header({ settings }: HeaderProps) {
