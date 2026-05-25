@@ -11,6 +11,16 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
       },
+      {
+        // Cloudflare R2 public buckets (pub-*.r2.dev)
+        protocol: 'https',
+        hostname: '*.r2.dev',
+      },
+      {
+        // Cloudflare R2 custom domains routed via workers.dev
+        protocol: 'https',
+        hostname: '*.cloudflarestorage.com',
+      },
     ],
   },
   experimental: {
