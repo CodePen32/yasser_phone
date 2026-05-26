@@ -176,16 +176,37 @@ async function fetchTwoBySlug(slugs: string[]): Promise<ShopByPriceProduct[]> {
   return rows;
 }
 
+// Fourth card: try powerbank → smartwatches/watch → chargers-cables/charger → tablets → phones
+const FOURTH_CARD_CANDIDATES: { slugs: string[]; title: string; href: string }[] = [
+  { slugs: ['powerbank', 'powerbanks'],                  title: 'باوربانك',       href: '/products?category=powerbank' },
+  { slugs: ['smartwatches', 'watch', 'watches'],         title: 'ساعات ذكية',    href: '/products?category=smartwatches' },
+  { slugs: ['chargers-cables', 'charger', 'chargers'],   title: 'شواحن وكابلات', href: '/products?category=chargers-cables' },
+  { slugs: ['tablets'],                                  title: 'أجهزة لوحية',  href: '/products?category=tablets' },
+  { slugs: ['phones', 'smartphones'],                    title: 'جوالات',        href: '/products?category=smartphones' },
+];
+
 export async function getShopByPriceSections(): Promise<ShopByPriceSection[]> {
   const [phones, headphones, accessories] = await Promise.all([
     fetchTwoBySlug(['phones', 'smartphones']),
     fetchTwoBySlug(['headphones', 'audio']),
     fetchTwoBySlug(['accessories', 'إكسسوارات']),
   ]);
+
+  // Pick the first candidate that has at least 1 product
+  let fourth: ShopByPriceSection = { title: 'باوربانك', href: '/products?category=powerbank', products: [] };
+  for (const candidate of FOURTH_CARD_CANDIDATES) {
+    const products = await fetchTwoBySlug(candidate.slugs);
+    if (products.length > 0) {
+      fourth = { title: candidate.title, href: candidate.href, products };
+      break;
+    }
+  }
+
   return [
     { title: 'آخر الموديلات في الجوالات', href: '/products?category=smartphones', products: phones },
     { title: 'اكتشف السماعات',             href: '/products?category=headphones',  products: headphones },
     { title: 'إكسسوارات وشواحن',           href: '/products?category=accessories', products: accessories },
+    fourth,
   ];
 }
 
