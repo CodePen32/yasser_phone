@@ -34,7 +34,7 @@ export default async function HomePage() {
       <Header settings={settings} navBrands={navBrands} navCategories={navCategories} />
 
       <main>
-        <HeroSection settings={settings} />
+        <HeroSection settings={settings} featuredProducts={featured} />
 
         {/* Amazon-like quad cards row */}
         <ShopByPrice />
