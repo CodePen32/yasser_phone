@@ -3,8 +3,28 @@ import { getShopByPriceSections } from '@/lib/db';
 import type { ShopByPriceSection } from '@/lib/db';
 
 const PRICE_ITEMS = [
-  { label: 'أقل من 5,000 MRU',   emoji: '💰', color: '#fffbeb' },
-  { label: '5,000 - 15,000 MRU', emoji: '💎', color: '#fef3c7' },
+  {
+    label:    'أقل من 5,000 MRU',
+    sublabel: 'اقتصادي',
+    color:    '#fffbeb',
+    href:     '/products?max_price=5000',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-amber-500">
+        <path d="M6 2 3 6l9 14 9-14-3-4Z"/><path d="M3 6h18"/><path d="m12 6 4-4M12 6 8 2"/>
+      </svg>
+    ),
+  },
+  {
+    label:    '5,000 – 15,000 MRU',
+    sublabel: 'ممتاز',
+    color:    '#f0fdf4',
+    href:     '/products?min_price=5000&max_price=15000',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-emerald-500">
+        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2M12 12v4M10 14h4"/>
+      </svg>
+    ),
+  },
 ];
 
 const ITEM_COLORS = ['#e8f4fd', '#f0f0f5', '#f0f9ff', '#f5f0ff', '#fff0f0', '#f0fff0'];
@@ -90,16 +110,20 @@ export async function ShopByPrice() {
           </div>
           <div className="grid grid-cols-2 gap-2 px-3 pb-3">
             {PRICE_ITEMS.map((item) => (
-              <div
+              <a
                 key={item.label}
-                className="rounded-lg p-3 flex flex-col items-center justify-center gap-1 aspect-square"
+                href={item.href}
+                className="rounded-lg p-3 flex flex-col items-center justify-center gap-2 aspect-square hover:opacity-90 transition-opacity"
                 style={{ background: item.color }}
               >
-                <span className="text-3xl">{item.emoji}</span>
-                <span className="text-[10px] text-center text-[var(--c-muted)] leading-tight line-clamp-2">
+                {item.icon}
+                <span className="text-[10px] font-bold text-center text-[var(--c-text)] leading-tight">
                   {item.label}
                 </span>
-              </div>
+                <span className="text-[9px] text-center text-[var(--c-muted)]">
+                  {item.sublabel}
+                </span>
+              </a>
             ))}
           </div>
           <div className="px-4 pb-4">
