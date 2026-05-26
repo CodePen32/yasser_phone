@@ -38,21 +38,23 @@ export function Header({ settings, navBrands = [], navCategories = [] }: HeaderP
     <>
       {/* ── Row 1: main header ─────────────────────────────────────────────── */}
       <header style={{ background: '#131921' }}>
-        <div className="max-w-[1500px] mx-auto px-3 sm:px-4 h-14 flex items-center gap-3">
+        <div className="max-w-[1500px] mx-auto px-2 sm:px-4 h-14 flex items-center gap-2 sm:gap-3">
 
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center gap-2 group border border-transparent hover:border-white/30 rounded px-1.5 py-1 transition-colors">
-            <Image
-              src="/assets/logo.png"
-              alt={settings.store_name}
-              width={44}
-              height={44}
-              className="rounded-xl object-contain w-10 h-10 sm:w-[52px] sm:h-[52px]"
-              priority
-            />
-            <div className="hidden sm:block leading-tight">
-              <div className="text-white font-extrabold text-lg font-display">{settings.store_name}</div>
-              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Premium Mobile Store</div>
+            <div className="relative w-10 h-10 sm:w-14 sm:h-14 shrink-0">
+              <Image
+                src="/assets/logo.png"
+                alt={settings.store_name}
+                fill
+                className="rounded-xl object-contain"
+                priority
+                sizes="56px"
+              />
+            </div>
+            <div className="leading-tight">
+              <div className="text-white font-extrabold text-sm sm:text-lg font-display">{settings.store_name}</div>
+              <div className="text-[10px] sm:text-xs hidden xs:block" style={{ color: 'rgba(255,255,255,0.5)' }}>Premium Mobile Store</div>
             </div>
           </Link>
 

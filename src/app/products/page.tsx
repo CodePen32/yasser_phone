@@ -61,7 +61,7 @@ export default async function ProductsPage({ searchParams }: Props) {
     <>
       <Header settings={settings} navBrands={navBrands} navCategories={navCategories} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-8">
         {/* Page header */}
         <div className="flex items-center justify-between mb-5">
           <div>
@@ -76,7 +76,7 @@ export default async function ProductsPage({ searchParams }: Props) {
         </div>
 
         {/* Category chips — from DB */}
-        <div className="flex gap-2 flex-wrap mb-6">
+        <div className="flex gap-1.5 sm:gap-2 flex-wrap mb-4 sm:mb-6">
           <a
             href="/products"
             className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
@@ -104,7 +104,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
         {/* Grid */}
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
             {products.map((p) => (
               <ProductCard key={p.id} product={p} whatsappNumber={settings.whatsapp_number} />
             ))}
