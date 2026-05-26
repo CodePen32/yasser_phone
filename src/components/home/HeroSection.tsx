@@ -2,46 +2,25 @@ import Image from 'next/image';
 import type { StoreSettings, Product } from '@/types';
 
 interface HeroSectionProps {
-  settings:         StoreSettings;
+  settings:          StoreSettings;
   featuredProducts?: Product[];
 }
-
-// Fallback card data when no real products are available
-const FALLBACK_CARDS = [
-  { label: 'آيفون 15 Pro',  sub: 'متوفر الآن',     color: '#1c1c2e', href: '/products?brand=apple' },
-  { label: 'Apple Watch',   sub: 'ساعات ذكية',      color: '#1a2a1a', href: '/products?category=smartwatches' },
-  { label: 'AirPods Pro',   sub: 'سماعات أصلية',    color: '#1a1a2e', href: '/products?category=headphones' },
-  { label: 'باور بانك',     sub: 'شحن سريع',        color: '#2a1a1a', href: '/products?category=powerbank' },
-];
 
 export function HeroSection({ settings, featuredProducts = [] }: HeroSectionProps) {
   const waUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent('السلام عليكم، أود الاستفسار عن عروضكم')}`;
 
-  // Pick up to 4 products with an image, fallback to plain cards for the rest
-  const withImage  = featuredProducts.filter((p) => p.main_image_url).slice(0, 4);
-  const cardCount  = 4;
-  const cards = Array.from({ length: cardCount }, (_, i) => {
-    const product = withImage[i];
-    if (product) {
-      return {
-        key:       String(product.id),
-        label:     product.name_ar,
-        sub:       product.brand?.name ?? '',
-        imageUrl:  product.main_image_url!,
-        href:      `/products/${product.slug}`,
-        color:     '#1c2233',
-      };
-    }
-    const fb = FALLBACK_CARDS[i];
-    return { key: fb.label, label: fb.label, sub: fb.sub, imageUrl: null, href: fb.href, color: fb.color };
-  });
+  // Only products with a real image — max 4
+  const cards = featuredProducts
+    .filter((p) => p.main_image_url)
+    .slice(0, 4);
+
+  const hasCards = cards.length > 0;
 
   return (
     <section
       className="relative overflow-hidden"
       style={{
         background: 'linear-gradient(135deg, #0d1b2a 0%, #1a2a3a 40%, #0f2744 100%)',
-        minHeight: '260px',
       }}
     >
       {/* Subtle grid overlay */}
@@ -54,43 +33,10 @@ export function HeroSection({ settings, featuredProducts = [] }: HeroSectionProp
         }}
       />
 
-      <div className="relative z-10 max-w-[1500px] mx-auto px-4 sm:px-6 py-8 flex flex-col md:flex-row-reverse items-center gap-6 md:gap-8">
+      <div className={`relative z-10 max-w-[1400px] mx-auto px-4 sm:px-8 py-8 sm:py-10 flex flex-col ${hasCards ? 'md:flex-row' : ''} items-center gap-6 md:gap-10`}>
 
-        {/* Product showcase cards — right on desktop, below text on mobile */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 shrink-0 w-full md:w-72 lg:w-80">
-          {cards.map((card) => (
-            <a
-              key={card.key}
-              href={card.href}
-              className="rounded-xl overflow-hidden relative flex flex-col items-center justify-end aspect-square hover:opacity-90 transition-opacity"
-              style={{ background: card.color, border: '1px solid rgba(255,255,255,0.08)' }}
-            >
-              {card.imageUrl ? (
-                <Image
-                  src={card.imageUrl}
-                  alt={card.label}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 45vw, 155px"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" className="w-10 h-10">
-                    <rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/>
-                  </svg>
-                </div>
-              )}
-              {/* label overlay */}
-              <div className="relative z-10 w-full px-2 py-1.5 text-center" style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}>
-                <div className="text-white text-[10px] sm:text-[11px] font-bold leading-tight line-clamp-1">{card.label}</div>
-                {card.sub && <div className="text-[9px] sm:text-[10px] leading-tight" style={{ color: 'rgba(255,255,255,0.55)' }}>{card.sub}</div>}
-              </div>
-            </a>
-          ))}
-        </div>
-
-        {/* Text + CTA */}
-        <div className="flex-1 text-center md:text-end w-full">
+        {/* ── Text + CTA (right column in RTL) ── */}
+        <div className={`flex-1 text-center md:text-end w-full ${hasCards ? 'md:order-2' : ''}`}>
           <div
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-4"
             style={{ background: 'rgba(245,159,11,0.15)', border: '1px solid rgba(245,159,11,0.35)', color: '#fbbf24' }}
@@ -101,12 +47,15 @@ export function HeroSection({ settings, featuredProducts = [] }: HeroSectionProp
 
           <h1
             className="font-display font-black leading-tight mb-3"
-            style={{ color: 'white', fontSize: 'clamp(1.5rem, 3.5vw, 2.4rem)' }}
+            style={{ color: 'white', fontSize: 'clamp(1.4rem, 3vw, 2.2rem)' }}
           >
             عروض الهواتف في {settings.city}
           </h1>
 
-          <p className="text-sm mb-4 max-w-sm mx-auto md:mr-0 md:ml-auto" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          <p
+            className="text-sm mb-5 max-w-xs mx-auto md:mr-0 md:ml-auto"
+            style={{ color: 'rgba(255,255,255,0.65)' }}
+          >
             خصومات على iPhone وSamsung وXiaomi. اطلب الآن عبر واتساب واستلم بسرعة.
           </p>
 
@@ -134,6 +83,46 @@ export function HeroSection({ settings, featuredProducts = [] }: HeroSectionProp
             </a>
           </div>
         </div>
+
+        {/* ── Product cards (left column in RTL) — only when there are real images ── */}
+        {hasCards && (
+          <div className={`grid gap-2 shrink-0 w-full md:order-1 ${
+            cards.length === 1 ? 'grid-cols-1 md:w-44' :
+            cards.length === 2 ? 'grid-cols-2 md:w-64' :
+            cards.length === 3 ? 'grid-cols-3 md:w-80' :
+                                 'grid-cols-2 md:w-72 lg:w-80'
+          }`}>
+            {cards.map((product) => (
+              <a
+                key={product.id}
+                href={`/products/${product.slug}`}
+                className="rounded-xl overflow-hidden relative flex flex-col items-end justify-end aspect-square hover:opacity-90 transition-opacity"
+                style={{ background: '#1c2233', border: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                <Image
+                  src={product.main_image_url!}
+                  alt={product.name_ar}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 45vw, 155px"
+                />
+                <div
+                  className="relative z-10 w-full px-2 py-1.5 text-center"
+                  style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+                >
+                  <div className="text-white text-[10px] sm:text-[11px] font-bold leading-tight line-clamp-1">
+                    {product.name_ar}
+                  </div>
+                  {product.brand?.name && (
+                    <div className="text-[9px] sm:text-[10px] leading-tight" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                      {product.brand.name}
+                    </div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Bottom gradient fade */}
