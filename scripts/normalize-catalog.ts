@@ -81,6 +81,11 @@ const NAME_TO_SLUG: Record<string, string> = {
   'laptops':             'laptops',
   'gaming':              'gaming',
   'ألعاب':               'gaming',
+
+  // Product name mappings (for products with Arabic-only slugs)
+  'اسكام برو 18 نوفا':  'escam-pro-18-nova',
+  'ايفون 18 برو ماكس':  'iphone-18-pro-max',
+  'آيفون 18 برو ماكس':  'iphone-18-pro-max',
 };
 
 function suggestSlug(name: string): string | null {
@@ -212,10 +217,21 @@ async function main() {
     console.log(green('  ✓ All product slugs are valid.'));
   } else {
     for (const p of badSlug) {
-      problemCount++;
-      console.log(red(`  ✗ product #${p.id} "${p.name_ar}"  slug="${p.slug}"`));
+      const suggest = suggestSlug(p.name_ar);
+      const line    = `  product #${p.id} "${p.name_ar}"  slug="${p.slug}"`;
+      if (suggest) {
+        problemCount++;
+        console.log(yellow('  ⚠') + line + `  →  suggest: "${suggest}"`);
+        if (!DRY_RUN) {
+          await prisma.product.update({ where: { id: p.id }, data: { slug: suggest } });
+          console.log(green('    ✅ fixed'));
+          fixCount++;
+        }
+      } else {
+        problemCount++;
+        console.log(red('  ✗') + line + '  (no suggestion — fix manually in admin)');
+      }
     }
-    console.log(yellow('\n  → Fix by editing each product in admin and saving with a valid slug.'));
   }
 
   // ── Summary ─────────────────────────────────────────────────────────────────
