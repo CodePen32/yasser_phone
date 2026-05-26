@@ -37,28 +37,89 @@ export function Header({ settings, navBrands = [], navCategories = [] }: HeaderP
     <>
       {/* ── Row 1: main header ─────────────────────────────────────────────── */}
       <header style={{ background: '#131921' }}>
-        <div className="max-w-[1500px] mx-auto px-2 sm:px-4 h-14 flex items-center gap-2 sm:gap-3">
 
-          {/* Logo */}
-          <Link href="/" className="shrink-0 flex items-center gap-2 group border border-transparent hover:border-white/30 rounded px-1.5 py-1 transition-colors">
-            <div className="relative w-10 h-10 sm:w-14 sm:h-14 shrink-0">
+        {/* Mobile: two-row layout */}
+        <div className="md:hidden">
+          {/* Row A: logo + name + WA icon */}
+          <div className="flex items-center gap-2 px-3 pt-2 pb-1">
+            <Link href="/" className="flex items-center gap-2 shrink-0">
+              <div className="relative w-9 h-9 shrink-0">
+                <Image
+                  src="/assets/logo.png"
+                  alt={settings.store_name}
+                  fill
+                  className="rounded-lg object-contain"
+                  priority
+                  sizes="36px"
+                />
+              </div>
+              <span className="text-white font-extrabold text-base font-display leading-tight">
+                {settings.store_name}
+              </span>
+            </Link>
+
+            <div className="flex-1" />
+
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 wa-grad text-white text-xs font-bold px-3 py-1.5 rounded-lg"
+            >
+              {WA_SVG}
+              <span>اطلب</span>
+            </a>
+          </div>
+
+          {/* Row B: search bar */}
+          <div className="px-3 pb-2">
+            <form action="/products" method="get">
+              <div className="flex rounded-lg overflow-hidden h-9">
+                <input
+                  type="text"
+                  name="q"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={`ابحث في ${settings.store_name}...`}
+                  className="flex-1 px-3 text-sm text-gray-900 placeholder-gray-500 bg-white outline-none min-w-0"
+                />
+                <button
+                  type="submit"
+                  className="px-3 bg-amber-400 hover:bg-amber-500 transition-colors flex items-center justify-center shrink-0"
+                  aria-label="بحث"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-gray-900">
+                    <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Desktop: single-row layout */}
+        <div className="hidden md:flex max-w-[1500px] mx-auto px-4 h-14 items-center gap-3">
+
+          {/* Logo + name */}
+          <Link href="/" className="shrink-0 flex items-center gap-2 border border-transparent hover:border-white/30 rounded px-1.5 py-1 transition-colors">
+            <div className="relative w-11 h-11 shrink-0">
               <Image
                 src="/assets/logo.png"
                 alt={settings.store_name}
                 fill
                 className="rounded-xl object-contain"
                 priority
-                sizes="56px"
+                sizes="44px"
               />
             </div>
             <div className="leading-tight">
-              <div className="text-white font-extrabold text-sm sm:text-lg font-display">{settings.store_name}</div>
-              <div className="text-[10px] sm:text-xs hidden xs:block" style={{ color: 'rgba(255,255,255,0.5)' }}>Premium Mobile Store</div>
+              <div className="text-white font-extrabold text-lg font-display">{settings.store_name}</div>
+              <div className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Premium Mobile Store</div>
             </div>
           </Link>
 
           {/* Location */}
-          <div className="hidden lg:flex flex-col shrink-0 border border-transparent hover:border-white/30 rounded px-2 py-1 cursor-pointer transition-colors">
+          <div className="hidden lg:flex flex-col shrink-0 border border-transparent hover:border-white/30 rounded px-2 py-1 transition-colors">
             <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>التوصيل إلى</span>
             <span className="text-white text-xs font-bold flex items-center gap-1">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3">
@@ -91,41 +152,27 @@ export function Header({ settings, navBrands = [], navCategories = [] }: HeaderP
             </div>
           </form>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-1 shrink-0">
-            {/* WhatsApp */}
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-2 wa-grad text-white text-xs font-bold px-3 py-2 rounded-lg hover:opacity-90 transition-opacity"
-            >
-              {WA_SVG}
-              <span>اطلب الآن</span>
-            </a>
+          {/* WhatsApp */}
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 wa-grad text-white text-xs font-bold px-3 py-2 rounded-lg hover:opacity-90 transition-opacity shrink-0"
+          >
+            {WA_SVG}
+            <span>اطلب الآن</span>
+          </a>
 
-            {/* Phone */}
-            {settings.phone && (
-              <a
-                href={`tel:${settings.phone}`}
-                className="hidden lg:flex flex-col items-center border border-transparent hover:border-white/30 rounded px-2 py-1 transition-colors"
-              >
-                <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>هاتف</span>
-                <span className="text-white text-xs font-bold num-latin ltr-value">{settings.phone}</span>
-              </a>
-            )}
-
-            {/* Mobile: WhatsApp icon only */}
+          {/* Phone */}
+          {settings.phone && (
             <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="md:hidden p-2 text-white"
-              aria-label="واتساب"
+              href={`tel:${settings.phone}`}
+              className="hidden lg:flex flex-col items-center border border-transparent hover:border-white/30 rounded px-2 py-1 transition-colors shrink-0"
             >
-              {WA_SVG}
+              <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>هاتف</span>
+              <span className="text-white text-xs font-bold num-latin ltr-value">{settings.phone}</span>
             </a>
-          </div>
+          )}
         </div>
       </header>
 
