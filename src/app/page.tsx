@@ -37,7 +37,7 @@ export default async function HomePage() {
         <HeroSection settings={settings} />
 
         {/* Amazon-like quad cards row */}
-        <ShopByPrice whatsappNumber={settings.whatsapp_number} />
+        <ShopByPrice />
 
         <FeaturesBar />
 

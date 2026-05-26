@@ -151,6 +151,44 @@ export async function getLatestProducts(limit = 10): Promise<Product[]> {
   return rows.map(toProduct);
 }
 
+// ─── ShopByPrice section: 2 newest products per category group ───────────────
+
+export interface ShopByPriceProduct {
+  id:             number;
+  name_ar:        string;
+  slug:           string;
+  main_image_url: string | null;
+}
+
+export interface ShopByPriceSection {
+  title:    string;
+  href:     string;
+  products: ShopByPriceProduct[];
+}
+
+async function fetchTwoBySlug(slugs: string[]): Promise<ShopByPriceProduct[]> {
+  const rows = await prisma.product.findMany({
+    where:   { is_active: true, category: { slug: { in: slugs } } },
+    orderBy: { created_at: 'desc' },
+    take:    2,
+    select:  { id: true, name_ar: true, slug: true, main_image_url: true },
+  });
+  return rows;
+}
+
+export async function getShopByPriceSections(): Promise<ShopByPriceSection[]> {
+  const [phones, headphones, accessories] = await Promise.all([
+    fetchTwoBySlug(['phones', 'smartphones']),
+    fetchTwoBySlug(['headphones', 'audio']),
+    fetchTwoBySlug(['accessories', 'إكسسوارات']),
+  ]);
+  return [
+    { title: 'آخر الموديلات في الجوالات', href: '/products?category=smartphones', products: phones },
+    { title: 'اكتشف السماعات',             href: '/products?category=headphones',  products: headphones },
+    { title: 'إكسسوارات وشواحن',           href: '/products?category=accessories', products: accessories },
+  ];
+}
+
 // ─── All products (with filters) ─────────────────────────────────────────────
 
 interface GetProductsOptions {
