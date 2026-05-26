@@ -1,15 +1,22 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Category } from '@/types';
 
 const CATEGORY_ICONS: Record<string, string> = {
-  phones:      '📱',
-  audio:       '🎧',
-  watches:     '⌚',
-  chargers:    '🔌',
-  accessories: '🎒',
-  powerbanks:  '🔋',
-  cases:       '🛡️',
-  cables:      '🔗',
+  phones:       '📱',
+  smartphones:  '📱',
+  audio:        '🎧',
+  headphones:   '🎧',
+  watches:      '⌚',
+  watch:        '⌚',
+  smartwatches: '⌚',
+  chargers:     '🔌',
+  charger:      '🔌',
+  accessories:  '🎒',
+  powerbanks:   '🔋',
+  powerbank:    '🔋',
+  cases:        '🛡️',
+  cables:       '🔗',
 };
 
 interface CategoryStripProps {
@@ -36,10 +43,20 @@ export function CategoryStrip({ categories }: CategoryStripProps) {
             className="flex flex-col items-center gap-2 shrink-0 group"
           >
             <div
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-md"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-md overflow-hidden relative"
               style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)' }}
             >
-              {CATEGORY_ICONS[cat.slug] ?? '📦'}
+              {cat.image_url ? (
+                <Image
+                  src={cat.image_url}
+                  alt={cat.name_ar}
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                />
+              ) : (
+                CATEGORY_ICONS[cat.slug] ?? '📦'
+              )}
             </div>
             <span className="text-[11px] sm:text-xs font-medium text-[var(--c-text)] text-center max-w-[70px] leading-tight">
               {cat.name_ar}
