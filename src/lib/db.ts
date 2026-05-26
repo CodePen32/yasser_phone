@@ -52,6 +52,37 @@ export async function getActiveBrands(): Promise<Brand[]> {
   });
 }
 
+// Arabic label map for well-known brand names (case-insensitive key)
+const BRAND_AR_LABELS: Record<string, string> = {
+  apple:   'آيفون',
+  iphone:  'آيفون',
+  samsung: 'سامسونج',
+  xiaomi:  'شاومي',
+  tecno:   'تكنو',
+  infinix: 'إنفنكس',
+  huawei:  'هواوي',
+  oppo:    'أوبو',
+  vivo:    'فيفو',
+  nokia:   'نوكيا',
+  realme:  'ريلمي',
+  motorola:'موتورولا',
+  oneplus: 'ون بلس',
+};
+
+export async function getNavBrands(): Promise<{ slug: string; name: string; labelAr: string }[]> {
+  const brands = await prisma.brand.findMany({
+    where:   { is_active: true },
+    orderBy: { name: 'asc' },
+    select:  { slug: true, name: true },
+  });
+  return brands.map((b) => ({
+    slug:    b.slug,
+    name:    b.name,
+    // Use known Arabic label, fall back to brand name itself
+    labelAr: BRAND_AR_LABELS[b.slug.toLowerCase()] ?? BRAND_AR_LABELS[b.name.toLowerCase()] ?? b.name,
+  }));
+}
+
 // ─── Products: common include ─────────────────────────────────────────────────
 
 const PRODUCT_INCLUDE = {

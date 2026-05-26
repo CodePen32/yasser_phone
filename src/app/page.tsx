@@ -10,6 +10,7 @@ import {
   getStoreSettings,
   getActiveCategories,
   getActiveBrands,
+  getNavBrands,
   getFeaturedProducts,
   getOfferProducts,
   getLatestProducts,
@@ -18,10 +19,11 @@ import {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [settings, categories, , featured, offers, latest] = await Promise.all([
+  const [settings, categories, , navBrands, featured, offers, latest] = await Promise.all([
     getStoreSettings(),
     getActiveCategories(),
     getActiveBrands(),
+    getNavBrands(),
     getFeaturedProducts(10),
     getOfferProducts(10),
     getLatestProducts(10),
@@ -29,7 +31,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header settings={settings} />
+      <Header settings={settings} navBrands={navBrands} />
 
       <main>
         <HeroSection settings={settings} />

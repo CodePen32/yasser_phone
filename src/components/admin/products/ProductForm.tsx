@@ -47,8 +47,9 @@ function toSlug(text: string): string {
     .trim()
     .toLowerCase()
     .replace(/\s+/g, '-')
-    .replace(/[^؀-ۿa-z0-9-]/g, '')
-    .replace(/-+/g, '-');
+    .replace(/[^a-z0-9-]/g, '') // ASCII only — no Arabic chars in slug
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 // ─── Upload helper ────────────────────────────────────────────────────────────

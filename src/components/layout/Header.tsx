@@ -2,11 +2,18 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { StoreSettings } from '@/types';
 
+interface NavBrand {
+  slug: string;
+  name: string;
+  labelAr: string;
+}
+
 interface HeaderProps {
-  settings: StoreSettings;
+  settings:   StoreSettings;
+  navBrands?: NavBrand[];
 }
 
 const WA_SVG = (
@@ -15,27 +22,41 @@ const WA_SVG = (
   </svg>
 );
 
-const NAV_ITEMS = [
-  { href: '/products',                              label: 'الكل' },
-  { href: '/products?offer=true',                   label: 'عروض اليوم' },
-  { href: '/products?category=smartphones',         label: 'الجوالات' },
-  { href: '/products?brand=apple',                  label: 'آيفون' },
-  { href: '/products?brand=samsung',                label: 'سامسونج' },
-  { href: '/products?brand=xiaomi',                 label: 'شاومي' },
-  { href: '/products?brand=tecno',                  label: 'تكنو' },
-  { href: '/products?brand=infinix',                label: 'إنفنكس' },
-  { href: '/products?brand=huawei',                 label: 'هواوي' },
-  { href: '/products?category=headphones',          label: 'سماعات' },
-  { href: '/products?category=chargers-cables',     label: 'شواحن' },
-  { href: '/products?category=accessories',         label: 'إكسسوارات' },
-  { href: '/products?category=smartwatches',        label: 'ساعات ذكية' },
+// Static nav items that don't depend on brand slugs
+const NAV_STATIC_START = [
+  { href: '/products',                          label: 'الكل' },
+  { href: '/products?offer=true',               label: 'عروض اليوم' },
+  { href: '/products?category=smartphones',     label: 'الجوالات' },
+];
+const NAV_STATIC_END = [
+  { href: '/products?category=headphones',      label: 'سماعات' },
+  { href: '/products?category=chargers-cables', label: 'شواحن' },
+  { href: '/products?category=accessories',     label: 'إكسسوارات' },
+  { href: '/products?category=smartwatches',    label: 'ساعات ذكية' },
 ];
 
-export function Header({ settings }: HeaderProps) {
+// Fallback brand links when navBrands prop is not provided
+const NAV_BRANDS_FALLBACK = [
+  { href: '/products?brand=apple',   label: 'آيفون' },
+  { href: '/products?brand=samsung', label: 'سامسونج' },
+  { href: '/products?brand=xiaomi',  label: 'شاومي' },
+  { href: '/products?brand=tecno',   label: 'تكنو' },
+  { href: '/products?brand=infinix', label: 'إنفنكس' },
+  { href: '/products?brand=huawei',  label: 'هواوي' },
+];
+
+export function Header({ settings, navBrands }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileOpen, setMobileOpen]   = useState(false);
 
   const waUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent('السلام عليكم، أود الاستفسار عن منتجاتكم')}`;
+
+  // Build brand nav items: use real slugs from DB if provided, else fallback
+  const brandNavItems = navBrands && navBrands.length > 0
+    ? navBrands.map((b) => ({ href: `/products?brand=${b.slug}`, label: b.labelAr }))
+    : NAV_BRANDS_FALLBACK;
+
+  const NAV_ITEMS = [...NAV_STATIC_START, ...brandNavItems, ...NAV_STATIC_END];
 
   return (
     <>

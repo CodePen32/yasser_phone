@@ -7,6 +7,7 @@ import {
   getStoreSettings,
   getActiveCategories,
   getActiveBrands,
+  getNavBrands,
   getProducts,
 } from '@/lib/db';
 
@@ -28,10 +29,11 @@ export default async function ProductsPage({ searchParams }: Props) {
 
   const isOffer = offer === 'true';
 
-  const [settings, categories, brands, products] = await Promise.all([
+  const [settings, categories, brands, navBrands, products] = await Promise.all([
     getStoreSettings(),
     getActiveCategories(),
     getActiveBrands(),
+    getNavBrands(),
     getProducts({
       search:       q,
       categorySlug: category,
@@ -55,7 +57,7 @@ export default async function ProductsPage({ searchParams }: Props) {
 
   return (
     <>
-      <Header settings={settings} />
+      <Header settings={settings} navBrands={navBrands} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Page header */}
