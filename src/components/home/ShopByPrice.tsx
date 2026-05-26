@@ -97,8 +97,8 @@ export async function ShopByPrice() {
           <SectionCard key={section.href} section={section} index={i} />
         ))}
 
-        {/* Price range card — kept static */}
-        <a
+        {/* Price range card — hidden */}
+        {false && <a
           href="/products"
           className="rounded-xl overflow-hidden hover:shadow-md transition-shadow"
           style={{ background: '#fff', border: '1px solid #e0e0e0' }}
@@ -129,7 +129,7 @@ export async function ShopByPrice() {
           <div className="px-4 pb-4">
             <span className="text-xs font-semibold text-[var(--c-link)] hover:underline">عرض الكل ←</span>
           </div>
-        </a>
+        </a>}
       </div>
     </section>
   );
