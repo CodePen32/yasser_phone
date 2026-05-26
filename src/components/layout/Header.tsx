@@ -20,7 +20,6 @@ const WA_SVG = (
 
 export function Header({ settings, navBrands = [], navCategories = [] }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [mobileOpen, setMobileOpen]   = useState(false);
 
   const waUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent('السلام عليكم، أود الاستفسار عن منتجاتكم')}`;
 
@@ -116,32 +115,29 @@ export function Header({ settings, navBrands = [], navCategories = [] }: HeaderP
               </a>
             )}
 
-            {/* Mobile menu */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 text-white border border-transparent hover:border-white/30 rounded transition-colors"
-              aria-label="القائمة"
+            {/* Mobile: WhatsApp icon only */}
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="md:hidden p-2 text-white"
+              aria-label="واتساب"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                {mobileOpen
-                  ? <path d="M18 6 6 18M6 6l12 12" />
-                  : <><line x1="3" x2="21" y1="6" y2="6" /><line x1="3" x2="21" y1="12" y2="12" /><line x1="3" x2="21" y1="18" y2="18" /></>
-                }
-              </svg>
-            </button>
+              {WA_SVG}
+            </a>
           </div>
         </div>
       </header>
 
-      {/* ── Row 2: category nav ────────────────────────────────────────────── */}
-      <nav style={{ background: '#232f3e' }} className="hidden md:block">
-        <div className="max-w-[1500px] mx-auto px-3 sm:px-4">
-          <div className="flex items-center gap-0 overflow-x-auto no-scrollbar h-10">
+      {/* ── Row 2: category nav — scrollable on mobile, same bar on desktop ── */}
+      <nav style={{ background: '#232f3e' }}>
+        <div className="overflow-x-auto no-scrollbar">
+          <div className="flex items-center min-w-max px-2 sm:px-4 h-9 sm:h-10">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-white text-xs font-medium px-3 py-2 rounded hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+                className="text-white text-[11px] sm:text-xs font-medium px-2.5 sm:px-3 py-1.5 sm:py-2 rounded hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
               >
                 {item.label}
               </Link>
@@ -149,28 +145,6 @@ export function Header({ settings, navBrands = [], navCategories = [] }: HeaderP
           </div>
         </div>
       </nav>
-
-      {/* ── Mobile drawer ──────────────────────────────────────────────────── */}
-      {mobileOpen && (
-        <div className="md:hidden border-t" style={{ background: '#232f3e', borderColor: 'rgba(255,255,255,0.1)' }}>
-          <div className="px-4 py-3 flex flex-col gap-1">
-            <a href={waUrl} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 wa-grad text-white font-bold py-2.5 rounded-lg mb-2">
-              {WA_SVG} اطلب الآن عبر واتساب
-            </a>
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className="text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
     </>
   );
 }
