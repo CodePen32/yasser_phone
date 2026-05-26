@@ -2,19 +2,21 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/products/ProductCard';
 import { FloatingWhatsApp } from '@/components/ui/WhatsAppButton';
-import { getStoreSettings, getOfferProducts } from '@/lib/db';
+import { getStoreSettings, getOfferProducts, getNavBrands, getNavCategories } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
 export default async function OffersPage() {
-  const [settings, offers] = await Promise.all([
+  const [settings, offers, navBrands, navCategories] = await Promise.all([
     getStoreSettings(),
     getOfferProducts(50),
+    getNavBrands(),
+    getNavCategories(),
   ]);
 
   return (
     <>
-      <Header settings={settings} />
+      <Header settings={settings} navBrands={navBrands} navCategories={navCategories} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}

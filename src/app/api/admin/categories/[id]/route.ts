@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { requireAdmin } from '@/lib/auth';
+import { isValidSlug } from '@/lib/slug';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +22,9 @@ export async function PUT(req: NextRequest, ctx: Ctx) {
 
     if (!body.name_ar?.trim() || !body.slug?.trim()) {
       return NextResponse.json({ error: 'الاسم والرابط مطلوبان' }, { status: 400 });
+    }
+    if (!isValidSlug(body.slug.trim())) {
+      return NextResponse.json({ error: 'الرابط المختصر غير صالح — استخدم حروفاً لاتينية وأرقاماً وشرطات فقط' }, { status: 400 });
     }
 
     const category = await prisma.category.update({

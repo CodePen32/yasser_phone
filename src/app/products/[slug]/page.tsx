@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { StarRating } from '@/components/ui/StarRating';
 import { ProductCard } from '@/components/products/ProductCard';
 import { FloatingWhatsApp } from '@/components/ui/WhatsAppButton';
-import { getStoreSettings, getProductBySlug, getRelatedProducts } from '@/lib/db';
+import { getStoreSettings, getProductBySlug, getRelatedProducts, getNavBrands, getNavCategories } from '@/lib/db';
 import { WhatsAppOrderButton } from '@/components/products/WhatsAppOrderButton';
 
 export const dynamic = 'force-dynamic';
@@ -46,9 +46,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
 
-  const [settings, product] = await Promise.all([
+  const [settings, product, navBrands, navCategories] = await Promise.all([
     getStoreSettings(),
     getProductBySlug(slug),
+    getNavBrands(),
+    getNavCategories(),
   ]);
 
   if (!product) notFound();
@@ -72,7 +74,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
   return (
     <>
-      <Header settings={settings} />
+      <Header settings={settings} navBrands={navBrands} navCategories={navCategories} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Breadcrumb */}

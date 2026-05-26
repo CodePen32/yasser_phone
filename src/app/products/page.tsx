@@ -8,6 +8,7 @@ import {
   getActiveCategories,
   getActiveBrands,
   getNavBrands,
+  getNavCategories,
   getProducts,
 } from '@/lib/db';
 
@@ -29,11 +30,12 @@ export default async function ProductsPage({ searchParams }: Props) {
 
   const isOffer = offer === 'true';
 
-  const [settings, categories, brands, navBrands, products] = await Promise.all([
+  const [settings, categories, brands, navBrands, navCategories, products] = await Promise.all([
     getStoreSettings(),
     getActiveCategories(),
     getActiveBrands(),
     getNavBrands(),
+    getNavCategories(),
     getProducts({
       search:       q,
       categorySlug: category,
@@ -48,16 +50,16 @@ export default async function ProductsPage({ searchParams }: Props) {
   const activeBrand    = brands.find((b) => b.slug === brand);
 
   const title =
-    q               ? `نتائج البحث: "${q}"` :
-    isOffer         ? 'عروض اليوم' :
-    activeCategory  ? activeCategory.name_ar :
-    activeBrand     ? activeBrand.name :
-    featured        ? 'المنتجات المميزة' :
-                      'جميع المنتجات';
+    q              ? `نتائج البحث: "${q}"` :
+    isOffer        ? 'عروض اليوم' :
+    activeCategory ? activeCategory.name_ar :
+    activeBrand    ? activeBrand.name :
+    featured       ? 'المنتجات المميزة' :
+                     'جميع المنتجات';
 
   return (
     <>
-      <Header settings={settings} navBrands={navBrands} />
+      <Header settings={settings} navBrands={navBrands} navCategories={navCategories} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Page header */}
@@ -73,12 +75,12 @@ export default async function ProductsPage({ searchParams }: Props) {
           <SortSelect current={sort} q={q} category={category} brand={brand} featured={featured} offer={offer} />
         </div>
 
-        {/* Category chips */}
+        {/* Category chips — from DB */}
         <div className="flex gap-2 flex-wrap mb-6">
           <a
             href="/products"
             className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-              !category && !brand
+              !category && !brand && !isOffer
                 ? 'bg-[var(--c-accent)] text-slate-900 border-[var(--c-accent)]'
                 : 'bg-[var(--c-surface)] text-[var(--c-muted)] border-[var(--c-border)] hover:border-[var(--c-accent)]'
             }`}
@@ -110,7 +112,7 @@ export default async function ProductsPage({ searchParams }: Props) {
         ) : (
           <div className="text-center py-20 text-[var(--c-muted)]">
             <div className="text-5xl mb-4">🔍</div>
-            <p className="text-lg font-semibold">لا توجد منتجات مطابقة</p>
+            <p className="text-lg font-semibold">لا توجد منتجات في هذا القسم حاليًا</p>
             <a href="/products" className="mt-3 inline-block text-sm text-[var(--c-link)] hover:underline">
               عرض جميع المنتجات
             </a>

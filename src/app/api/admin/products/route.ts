@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { requireAdmin } from '@/lib/auth';
+import { isValidSlug } from '@/lib/slug';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,6 +77,18 @@ export async function POST(req: NextRequest) {
       images?: { image_url: string; sort_order?: number }[];
       specs?: { spec_name: string; spec_value: string }[];
     };
+
+    // Validate slug
+    if (!body.slug?.trim() || !isValidSlug(body.slug.trim())) {
+      return NextResponse.json({ error: 'الرابط المختصر غير صالح — استخدم حروفاً لاتينية وأرقاماً وشرطات فقط' }, { status: 400 });
+    }
+    // Require brand and category
+    if (!body.brand_id) {
+      return NextResponse.json({ error: 'يجب اختيار الماركة' }, { status: 400 });
+    }
+    if (!body.category_id) {
+      return NextResponse.json({ error: 'يجب اختيار التصنيف' }, { status: 400 });
+    }
 
     const product = await prisma.$transaction(async (tx) => {
       const created = await tx.product.create({

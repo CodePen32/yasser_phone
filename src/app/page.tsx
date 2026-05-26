@@ -9,8 +9,8 @@ import { FloatingWhatsApp } from '@/components/ui/WhatsAppButton';
 import {
   getStoreSettings,
   getActiveCategories,
-  getActiveBrands,
   getNavBrands,
+  getNavCategories,
   getFeaturedProducts,
   getOfferProducts,
   getLatestProducts,
@@ -19,11 +19,11 @@ import {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [settings, categories, , navBrands, featured, offers, latest] = await Promise.all([
+  const [settings, categories, navBrands, navCategories, featured, offers, latest] = await Promise.all([
     getStoreSettings(),
     getActiveCategories(),
-    getActiveBrands(),
     getNavBrands(),
+    getNavCategories(),
     getFeaturedProducts(10),
     getOfferProducts(10),
     getLatestProducts(10),
@@ -31,7 +31,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header settings={settings} navBrands={navBrands} />
+      <Header settings={settings} navBrands={navBrands} navCategories={navCategories} />
 
       <main>
         <HeroSection settings={settings} />

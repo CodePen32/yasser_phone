@@ -1,6 +1,4 @@
 // ── DB queries — all Prisma calls are here.
-// Pages import from this file. To revert to mock data,
-// change these functions to return from mock-data.ts instead.
 
 import { prisma } from './prisma';
 import type { StoreSettings, Category, Brand, Product } from '@/types';
@@ -22,7 +20,6 @@ function toProduct(p: any): Product {
 export async function getStoreSettings(): Promise<StoreSettings> {
   const settings = await prisma.storeSettings.findFirst({ orderBy: { id: 'asc' } });
 
-  // Fallback if DB not yet seeded
   if (!settings) {
     return {
       id: 1, store_name: 'Yasser Phone', slogan: 'Premium Mobile Store',
@@ -52,35 +49,61 @@ export async function getActiveBrands(): Promise<Brand[]> {
   });
 }
 
-// Arabic label map for well-known brand names (case-insensitive key)
+// ─── Navigation data (Header) ─────────────────────────────────────────────────
+// Returns brands + categories with their REAL slugs from DB.
+// This is the single source of truth for Header nav links.
+
+export interface NavBrand {
+  slug:    string;
+  name:    string;
+  labelAr: string; // Arabic display label
+}
+
+export interface NavCategory {
+  slug:    string;
+  name_ar: string;
+}
+
+// Arabic display labels for well-known brand slugs / names
 const BRAND_AR_LABELS: Record<string, string> = {
-  apple:   'آيفون',
-  iphone:  'آيفون',
-  samsung: 'سامسونج',
-  xiaomi:  'شاومي',
-  tecno:   'تكنو',
-  infinix: 'إنفنكس',
-  huawei:  'هواوي',
-  oppo:    'أوبو',
-  vivo:    'فيفو',
-  nokia:   'نوكيا',
-  realme:  'ريلمي',
-  motorola:'موتورولا',
-  oneplus: 'ون بلس',
+  apple:    'آيفون',
+  iphone:   'آيفون',
+  samsung:  'سامسونج',
+  xiaomi:   'شاومي',
+  tecno:    'تكنو',
+  infinix:  'إنفنكس',
+  huawei:   'هواوي',
+  oppo:     'أوبو',
+  vivo:     'فيفو',
+  nokia:    'نوكيا',
+  realme:   'ريلمي',
+  motorola: 'موتورولا',
+  oneplus:  'ون بلس',
+  honor:    'أونر',
 };
 
-export async function getNavBrands(): Promise<{ slug: string; name: string; labelAr: string }[]> {
-  const brands = await prisma.brand.findMany({
+export async function getNavBrands(): Promise<NavBrand[]> {
+  const rows = await prisma.brand.findMany({
     where:   { is_active: true },
     orderBy: { name: 'asc' },
     select:  { slug: true, name: true },
   });
-  return brands.map((b) => ({
+  return rows.map((b) => ({
     slug:    b.slug,
     name:    b.name,
-    // Use known Arabic label, fall back to brand name itself
-    labelAr: BRAND_AR_LABELS[b.slug.toLowerCase()] ?? BRAND_AR_LABELS[b.name.toLowerCase()] ?? b.name,
+    labelAr: BRAND_AR_LABELS[b.slug.toLowerCase()]
+           ?? BRAND_AR_LABELS[b.name.toLowerCase()]
+           ?? b.name,
   }));
+}
+
+export async function getNavCategories(): Promise<NavCategory[]> {
+  const rows = await prisma.category.findMany({
+    where:   { is_active: true },
+    orderBy: { sort_order: 'asc' },
+    select:  { slug: true, name_ar: true },
+  });
+  return rows;
 }
 
 // ─── Products: common include ─────────────────────────────────────────────────
@@ -131,12 +154,12 @@ export async function getLatestProducts(limit = 10): Promise<Product[]> {
 // ─── All products (with filters) ─────────────────────────────────────────────
 
 interface GetProductsOptions {
-  search?:      string;
+  search?:       string;
   categorySlug?: string;
-  brandSlug?:   string;
-  isFeatured?:  boolean;
-  isOffer?:     boolean;
-  sort?:        'newest' | 'price_low' | 'price_high' | 'popular';
+  brandSlug?:    string;
+  isFeatured?:   boolean;
+  isOffer?:      boolean;
+  sort?:         'newest' | 'price_low' | 'price_high' | 'popular';
 }
 
 export async function getProducts(opts: GetProductsOptions = {}): Promise<Product[]> {
@@ -151,6 +174,7 @@ export async function getProducts(opts: GetProductsOptions = {}): Promise<Produc
       { description_ar: { contains: search } },
     ];
   }
+  // Filter by slug from the related table — DB is the source of truth
   if (categorySlug) where.category = { slug: categorySlug };
   if (brandSlug)    where.brand    = { slug: brandSlug };
   if (isFeatured)   where.is_featured = true;

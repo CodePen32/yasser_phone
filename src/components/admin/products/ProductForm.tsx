@@ -41,15 +41,19 @@ interface Props {
   productId?: number;
 }
 
-// ─── Slug helper ──────────────────────────────────────────────────────────────
+// ─── Slug helper (mirrors src/lib/slug.ts for client-side use) ───────────────
 function toSlug(text: string): string {
   return text
     .trim()
     .toLowerCase()
     .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '') // ASCII only — no Arabic chars in slug
+    .replace(/[^a-z0-9-]/g, '')
     .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(/^-+|-+$/g, '');
+}
+
+function isValidSlug(s: string): boolean {
+  return /^[a-z0-9]+([a-z0-9-]*[a-z0-9])?$/.test(s);
 }
 
 // ─── Upload helper ────────────────────────────────────────────────────────────
@@ -273,6 +277,17 @@ export default function ProductForm({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+
+    // ── Client-side validation ───────────────────────────────────────────────
+    if (!form.name_ar.trim()) { setError('اسم المنتج مطلوب'); return; }
+    if (!form.slug.trim() || !isValidSlug(form.slug.trim())) {
+      setError('الرابط المختصر (slug) غير صالح — استخدم حروفاً لاتينية وأرقاماً وشرطات فقط، مثال: iphone-15-pro');
+      return;
+    }
+    if (!form.brand_id) { setError('يجب اختيار الماركة'); return; }
+    if (!form.category_id) { setError('يجب اختيار التصنيف'); return; }
+    if (!form.price || isNaN(parseFloat(form.price))) { setError('السعر مطلوب'); return; }
+
     setSaving(true);
 
     const payload = {

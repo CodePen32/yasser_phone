@@ -4,16 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import type { StoreSettings } from '@/types';
-
-interface NavBrand {
-  slug: string;
-  name: string;
-  labelAr: string;
-}
+import type { NavBrand, NavCategory } from '@/lib/db';
 
 interface HeaderProps {
-  settings:   StoreSettings;
-  navBrands?: NavBrand[];
+  settings:      StoreSettings;
+  navBrands?:    NavBrand[];
+  navCategories?: NavCategory[];
 }
 
 const WA_SVG = (
@@ -22,41 +18,21 @@ const WA_SVG = (
   </svg>
 );
 
-// Static nav items that don't depend on brand slugs
-const NAV_STATIC_START = [
-  { href: '/products',                          label: 'الكل' },
-  { href: '/products?offer=true',               label: 'عروض اليوم' },
-  { href: '/products?category=smartphones',     label: 'الجوالات' },
-];
-const NAV_STATIC_END = [
-  { href: '/products?category=headphones',      label: 'سماعات' },
-  { href: '/products?category=chargers-cables', label: 'شواحن' },
-  { href: '/products?category=accessories',     label: 'إكسسوارات' },
-  { href: '/products?category=smartwatches',    label: 'ساعات ذكية' },
-];
-
-// Fallback brand links when navBrands prop is not provided
-const NAV_BRANDS_FALLBACK = [
-  { href: '/products?brand=apple',   label: 'آيفون' },
-  { href: '/products?brand=samsung', label: 'سامسونج' },
-  { href: '/products?brand=xiaomi',  label: 'شاومي' },
-  { href: '/products?brand=tecno',   label: 'تكنو' },
-  { href: '/products?brand=infinix', label: 'إنفنكس' },
-  { href: '/products?brand=huawei',  label: 'هواوي' },
-];
-
-export function Header({ settings, navBrands }: HeaderProps) {
+export function Header({ settings, navBrands = [], navCategories = [] }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileOpen, setMobileOpen]   = useState(false);
 
   const waUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent('السلام عليكم، أود الاستفسار عن منتجاتكم')}`;
 
-  // Build brand nav items: use real slugs from DB if provided, else fallback
-  const brandNavItems = navBrands && navBrands.length > 0
-    ? navBrands.map((b) => ({ href: `/products?brand=${b.slug}`, label: b.labelAr }))
-    : NAV_BRANDS_FALLBACK;
-
-  const NAV_ITEMS = [...NAV_STATIC_START, ...brandNavItems, ...NAV_STATIC_END];
+  // Build nav items entirely from DB data — no hardcoded slugs
+  const navItems = [
+    { href: '/products',          label: 'الكل' },
+    { href: '/products?offer=true', label: 'عروض اليوم' },
+    // Brands from DB (real slugs)
+    ...navBrands.map((b) => ({ href: `/products?brand=${b.slug}`, label: b.labelAr })),
+    // Categories from DB (real slugs)
+    ...navCategories.map((c) => ({ href: `/products?category=${c.slug}`, label: c.name_ar })),
+  ];
 
   return (
     <>
@@ -138,7 +114,6 @@ export function Header({ settings, navBrands }: HeaderProps) {
               </a>
             )}
 
-
             {/* Mobile menu */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -160,7 +135,7 @@ export function Header({ settings, navBrands }: HeaderProps) {
       <nav style={{ background: '#232f3e' }} className="hidden md:block">
         <div className="max-w-[1500px] mx-auto px-3 sm:px-4">
           <div className="flex items-center gap-0 overflow-x-auto no-scrollbar h-10">
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -181,7 +156,7 @@ export function Header({ settings, navBrands }: HeaderProps) {
               className="flex items-center justify-center gap-2 wa-grad text-white font-bold py-2.5 rounded-lg mb-2">
               {WA_SVG} اطلب الآن عبر واتساب
             </a>
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
